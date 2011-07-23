@@ -1,0 +1,11 @@
+development:
+  adapter: mysql
+  database: qna_dev
+  pool: 5
+  timeout: 5000
+
+test:
+  adapter: mysql
+  database: qna_test
+  pool: 5
+  timeout: 5000
