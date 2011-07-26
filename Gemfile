@@ -9,4 +9,5 @@ group :development, :test do
     gem 'rspec-rails'
     gem 'cucumber-rails'
     gem 'ruby-debug19'
+    gem 'fabrication'
 end
