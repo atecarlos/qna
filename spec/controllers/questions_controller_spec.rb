@@ -6,20 +6,16 @@ describe QuestionsController do
 		@question = Fabricate(:question)
 	end
 
-	it "should load all questions" do
-		get "index"
-
-		response.should be_success
-		assigns(:questions).should_not be_nil
-		assigns(:questions).length.should == 1
-		assigns(:questions).should include @question
+	it "should expose all questions" do
+		controller.questions.should_not be_nil
+		controller.questions.length.should == 1
+		controller.questions.should include @question
 	end
 
 	it "should ready a new question" do
 		get "index"
 
 		response.should be_success
-		assigns(:question).should_not be_nil
 	end
 
 	it "should save a new question" do
@@ -33,23 +29,23 @@ describe QuestionsController do
 		saved_question.body.should == "new question body"
 	end
 
-	it "should show a question" do
+	it "should expose a question" do
 		get "show", { id:@question.id }
 
 		response.should be_success
 
-		shown_question = assigns(:question)
-		shown_question.should_not be_nil
-		shown_question.title.should == @question.title
-		shown_question.body.should == @question.body
+		exposed_question = controller.question
+		exposed_question.should_not be_nil
+		exposed_question.title.should == @question.title
+		exposed_question.body.should == @question.body
 	end
 
-	it "should show a question for edit" do
+	it "should expose question for edit" do
 		get "edit", { id:@question.id }
 
 		response.should be_success
 
-		question_for_edit = assigns(:question)
+		question_for_edit = controller.question
 		question_for_edit.should_not be_nil
 		question_for_edit.title.should == @question.title
 		question_for_edit.body.should == @question.body
@@ -60,7 +56,7 @@ describe QuestionsController do
 
 		response.should redirect_to question_path(@question)
 
-		updated_question = assigns(:question)
+		updated_question = controller.question
 		updated_question.should_not be_nil
 		updated_question.title.should == "updated title"
 		updated_question.body.should == "updated body"

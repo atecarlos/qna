@@ -5,7 +5,7 @@
 <h2>Search for an answer</h2>
 <div>
 
-	<% @questions.each do |q| %>
+	<% questions.each do |q| %>
 		<hr />
 		<p style="font-weight:bold"><%= link_to q.title, q%></p>
 		<p><%= q.body %></p>
