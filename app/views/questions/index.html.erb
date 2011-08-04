@@ -1,0 +1,14 @@
+
+<h2>Ask a question</h2>
+<%= render :partial => "form", :locals => { button_text:"Ask" } %>
+
+<h2>Search for an answer</h2>
+<div>
+
+	<% @questions.each do |q| %>
+		<hr />
+		<p style="font-weight:bold"><%= link_to q.title, q%></p>
+		<p><%= q.body %></p>
+	<% end %>
+
+</div>
