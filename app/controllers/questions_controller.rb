@@ -3,23 +3,23 @@ class QuestionsController < ApplicationController
 	expose(:questions) { Question.all }
 	expose(:question)
 
-	def index
-	end
+	# shells for index, new, show, edit actions
+	# are provided by default
 
 	def create
-		question.save
-		redirect_to questions_path
-	end
-
-	def show
-	end
-
-	def edit
+		if question.save
+			redirect_to questions_path
+		else
+			render :new
+		end
 	end
 
 	def update
-		question.update_attributes(params[:question])
-		redirect_to question_path(question)
+		if question.update_attributes(params[:question])
+			redirect_to question_path(question)
+		else
+			render :edit
+		end
 	end
 
 end

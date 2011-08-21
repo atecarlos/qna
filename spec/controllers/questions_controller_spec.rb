@@ -12,13 +12,13 @@ describe QuestionsController do
 		controller.questions.should include @question
 	end
 
-	it "should ready a new question" do
+	it "should have an index action" do
 		get "index"
 
 		response.should be_success
 	end
 
-	it "should save a new question" do
+	it "should create a new question" do
 		post "create", { question: { title:"new question", body:"new question body"} }
 
 		response.should redirect_to questions_path
@@ -27,6 +27,11 @@ describe QuestionsController do
 		saved_question.should_not be_nil
 		saved_question.title.should == "new question"
 		saved_question.body.should == "new question body"
+	end
+
+	it "should not redirect when creating if invalid attributes provided" do
+		post "create", { question: { title:"", body:""} }
+		response.should render_template('new')
 	end
 
 	it "should expose a question" do
@@ -51,7 +56,7 @@ describe QuestionsController do
 		question_for_edit.body.should == @question.body
 	end
 
-	it "should edit a question" do
+	it "should update and show a question" do
 		put "update", { id:@question.id, question: { title:"updated title", body:"updated body"} }
 
 		response.should redirect_to question_path(@question)
@@ -60,6 +65,11 @@ describe QuestionsController do
 		updated_question.should_not be_nil
 		updated_question.title.should == "updated title"
 		updated_question.body.should == "updated body"
+	end
+
+	it "should remain in the edit form if there are validation errors when updating" do
+		put "update", { id:@question.id, question: { title:"", body:""} }
+		response.should render_template("edit")
 	end
 
 end
