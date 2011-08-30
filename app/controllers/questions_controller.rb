@@ -3,8 +3,7 @@ class QuestionsController < ApplicationController
 	expose(:questions) { Question.all }
 	expose(:question)
 
-	# shells for index, new, show, edit actions
-	# are provided by default
+	# basic index, new, show, edit actions are provided by default
 
 	def create
 		if question.save
