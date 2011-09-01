@@ -3,7 +3,7 @@ require 'spec_helper'
 describe QuestionsController do
 
 	before(:each) do
-		@question = Fabricate(:question)
+		@question = Fabricate(:generic_question)
 	end
 
 	it "should expose all questions" do

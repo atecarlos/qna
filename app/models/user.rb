@@ -6,4 +6,6 @@ class User
            :recoverable, :rememberable, :trackable, :validatable
 
     attr_accessible :email, :password, :password_confirmation
+
+    many :questions
 end
