@@ -3,18 +3,29 @@ require 'spec_helper'
 describe QuestionsController do
 
 	before(:each) do
-		@question = Fabricate(:generic_question)
+		@question = Fabricate(:question)
+		@user = Fabricate(:pepe)
+		sign_in @user
 	end
 
 	it "should expose all questions" do
 		controller.questions.should_not be_nil
-		controller.questions.length.should == 1
+		controller.questions.length.should == 4
 		controller.questions.should include @question
 	end
 
 	it "should have an index action" do
 		get "index"
+		response.should be_success
+	end
 
+	it "should expose the users questions" do
+		controller.users_questions.should_not be_nil
+		controller.users_questions.length.should == 3
+	end
+
+	it "should show all of the users questions" do
+		get "my_questions"
 		response.should be_success
 	end
 
@@ -27,6 +38,7 @@ describe QuestionsController do
 		saved_question.should_not be_nil
 		saved_question.title.should == "new question"
 		saved_question.body.should == "new question body"
+		saved_question.user.should == @user
 	end
 
 	it "should not redirect when creating if invalid attributes provided" do

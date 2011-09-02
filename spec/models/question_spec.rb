@@ -10,7 +10,7 @@ describe Question do
   # as of the time of this test been written
 
   it "should have many answers" do
-  	question = Fabricate(:generic_question)
+  	question = Fabricate(:question)
 
   	question.answers << Fabricate(:blue_answer)
   	question.answers.length.should == 1
@@ -19,7 +19,7 @@ describe Question do
   end
 
   it "should belong to a user" do
-    question = Fabricate(:joes_question)
+    question = Fabricate(:question)
     question.user.should_not be_nil
   end
 

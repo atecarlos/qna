@@ -44,7 +44,9 @@ module Qna
     config.filter_parameters += [:password]
 
     config.generators do |g|
+        g.test_framework :rspec, :fixture => true
         g.fixture_replacement :fabrication
+        g.orm :mongo_mapper
     end
     
   end

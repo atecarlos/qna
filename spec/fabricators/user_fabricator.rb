@@ -1,10 +1,10 @@
-Fabricator(:pepe_3, :from => :user) do
-	email "pepe@email.com"
-	password "claves"
-	questions(:count => 3) { |this_user, i| Fabricate(:generic_question, :user => this_user) }
+Fabricator(:user) do
+	email { sequence(:email) { |i| "user#{i}@test.com" } }
+	password 'asuper_password'
 end
 
-Fabricator(:joe, :from => :user) do
-	email 'joe@email.com'
-	password 'my_pass'
+Fabricator(:pepe, :from => :user) do
+	email { sequence(:email) { |i| "pepe_#{i}@email.com" } }
+	password "claves"
+	questions(:count => 3) { |this_user, i| Fabricate(:question, :user => this_user) }
 end

@@ -1,0 +1,9 @@
+<div>
+
+	<% questions.each do |q| %>
+		<hr />
+		<p style="font-weight:bold"><%= link_to q.title, q%></p>
+		<p><%= q.body %></p>
+	<% end %>
+
+</div>

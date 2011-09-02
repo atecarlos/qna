@@ -1,10 +1,5 @@
-Fabricator(:generic_question, :from => :question) do
-	title 'This is my title'
+Fabricator(:question) do
+	title { sequence(:title) { |i| "my question #{i}" } }
 	body 'How do I do this??'
-end
-
-Fabricator(:joes_question, :from => :question) do
-	title 'My name!'
-	body 'What is my name?'
-	user { Fabricate(:joe) }
+	user { Fabricate(:user) }
 end

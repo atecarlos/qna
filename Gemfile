@@ -1,9 +1,7 @@
 source 'http://rubygems.org'
 
-gem 'rails', '3.0.9'
-gem 'mysql'
+gem 'rails'
 gem 'devise'
-gem 'jquery-rails'
 gem 'mongo_mapper'
 gem 'bson_ext'
 gem 'decent_exposure'
