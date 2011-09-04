@@ -7,6 +7,7 @@ class Question
   	validates_presence_of :user
   	belongs_to :user
   	alias :creator :user
+  	alias :creator= :user=
   	
   	many :answers
 end

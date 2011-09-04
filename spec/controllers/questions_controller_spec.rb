@@ -2,6 +2,9 @@ require 'spec_helper'
 
 describe QuestionsController do
 
+	TITLE = "new question"
+	BODY = "new question body"
+
 	before(:each) do
 		@question = Fabricate(:question)
 		@user = Fabricate(:pepe)
@@ -49,29 +52,29 @@ describe QuestionsController do
 	end
 
 	it "should create a new question" do
-		post "create", { question: { title:"new question", body:"new question body"} }
+		do_create
 
-		saved_question = Question.find_by_title("new question")
+		saved_question = Question.find_by_title(TITLE)
 		saved_question.should_not be_nil
-		saved_question.title.should == "new question"
-		saved_question.body.should == "new question body"
+		saved_question.title.should == TITLE
+		saved_question.body.should == BODY
 		saved_question.user.should == @user
 	end
 
 	it "should always redirect to return url in session when creating a new question" do
 		session[:return_to] = questions_path
-		post "create", { question: { title:"new question", body:"new question body"} }
+		do_create
 		
 		response.should redirect_to questions_path
 
 		session[:return_to] = my_questions_path
-		post "create", { question: { title:"another new question", body:"new question body"} }
+		do_create
 		
 		response.should redirect_to my_questions_path
 	end
 
 	it "should not redirect when creating if invalid attributes provided" do
-		post "create", { question: { title:"", body:""} }
+		do_create_invalid
 		response.should render_template('new')
 	end
 
@@ -105,28 +108,43 @@ describe QuestionsController do
 	end
 
 	it "should update a question" do
-		put "update", { id:@question.id, question: { title:"updated title", body:"updated body"} }
+		do_update
 
 		updated_question = controller.question
 		updated_question.should_not be_nil
-		updated_question.title.should == "updated title"
-		updated_question.body.should == "updated body"
+		updated_question.title.should == TITLE
+		updated_question.body.should == BODY
 	end
 
 	it "should always redirect to return url in session after successfully updating a question" do
 		session[:return_to] = questions_path
-		put "update", { id:@question.id, question: { title:"updated title", body:"updated body"} }
+		do_update
 		response.should redirect_to questions_path
 
 		session[:return_to] = my_questions_path
-		put "update", { id:@question.id, question: { title:"updated title", body:"updated body 2"} }
-		
+		do_update
 		response.should redirect_to my_questions_path
 	end
 
 	it "should remain in the edit form if there are validation errors when updating" do
-		put "update", { id:@question.id, question: { title:"", body:""} }
+		do_update_invalid
 		response.should render_template("edit")
 	end
 
+	private 
+		def do_create
+			post "create", { question: { title:TITLE, body:BODY} }
+		end
+
+		def do_create_invalid
+			post "create", { question: { title:TITLE, body:""} }
+		end
+
+		def do_update
+			put "update", { id:@question.id, question: { title:TITLE, body:BODY} }
+		end	
+
+		def do_update_invalid
+			put "update", { id:@question.id, question: { title:TITLE, body:""} }
+		end
 end

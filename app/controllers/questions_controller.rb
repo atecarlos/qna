@@ -11,7 +11,7 @@ class QuestionsController < ApplicationController
 	end
 
 	def create
-		question.user = current_user
+		question.creator = current_user
 		if question.save
 			redirect_to session[:return_to]
 		else
