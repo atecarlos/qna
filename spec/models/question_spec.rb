@@ -25,4 +25,9 @@ describe Question do
     question.user.should_not be_nil
   end
 
+  it "should have a creator" do
+    question = Fabricate(:question)
+    question.creator.should_not be_nil
+  end
+
 end

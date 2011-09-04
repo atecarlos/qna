@@ -5,7 +5,8 @@ class Question
   	key :body, String, required:true
 
   	validates_presence_of :user
-
   	belongs_to :user
+  	alias :creator :user
+  	
   	many :answers
 end

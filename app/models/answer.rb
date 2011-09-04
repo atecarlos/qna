@@ -5,4 +5,5 @@ class Answer
 
   	validates_presence_of :user
   	belongs_to :user
+  	alias :creator :user
 end

@@ -10,4 +10,9 @@ describe Answer do
     	question.user.should_not be_nil
   	end
 
+  	it "should have a creator" do
+  		question = Fabricate(:answer)
+  		question.creator.should_not be_nil
+  	end
+
 end
