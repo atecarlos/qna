@@ -1,0 +1,15 @@
+<% if user_signed_in? %>
+	<ul>
+	    <li><%= current_user.email %></li>
+	    <li><%= link_to 'My account', edit_user_registration_path %></li>
+	    <li><%= link_to 'My questions', my_questions_path %></li>
+	    <li><%= link_to 'Sign out', destroy_user_session_path, :method => :delete %></li>
+	</ul>
+<% else %>
+	<ul>
+	    <li><%= link_to 'Sign in', new_user_session_path %></li>
+	    <li><%= link_to 'Sign up', new_user_registration_path %></li>
+	</ul>
+<% end %>
+
+<%= yield %>

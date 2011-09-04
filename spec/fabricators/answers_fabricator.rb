@@ -1,7 +1,4 @@
-Fabricator(:blue_answer, :from  => :answer) do
-	body 'Blue'
-end
-
-Fabricator(:red_answer, :from => :answer) do
-	body "Red"
+Fabricator(:answer) do
+	body { sequence(:body) { |i| "My #{i} answer" } }
+	user { Fabricate(:user) }
 end
