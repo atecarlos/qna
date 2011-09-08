@@ -6,5 +6,5 @@ end
 Fabricator(:pepe, :from => :user) do
 	email { sequence(:email) { |i| "pepe_#{i}@email.com" } }
 	password "claves"
-	questions(:count => 3) { |this_user, i| Fabricate(:question, :user => this_user) }
+	questions(count: 3) { |this_user, i| Fabricate(:question, user: this_user) }
 end

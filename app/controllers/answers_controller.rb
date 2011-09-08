@@ -1,15 +1,22 @@
 class AnswersController < ApplicationController
 
-	expose(:answer)
 	expose(:question)
+	expose(:answers) { question.answers }
+	expose(:answer)	
+
+	def index
+	end
+
+	def new
+	end
 
 	def create
 		answer.creator = current_user
 		answer.question = question
 		if answer.save
-			redirect_to question_path(answer.question)
+			redirect_to question_answers_path(answer.question)
 		else
-			render 'questions/show'
+			render :new
 		end
 	end
 

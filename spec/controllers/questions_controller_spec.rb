@@ -77,32 +77,19 @@ describe QuestionsController do
 		do_create_invalid
 		response.should render_template('new')
 	end
-
-	it "should expose a question" do
-		get "show", { id:@question.id }
-
-		response.should be_success
-
-		exposed_question = controller.question
-		exposed_question.should_not be_nil
-		exposed_question.title.should == @question.title
-		exposed_question.body.should == @question.body
-	end
 	
 	it "should expose question for edit" do
-		get "edit", { id:@question.id }
-
+		do_edit
 		response.should be_success
 
-		question_for_edit = controller.question
-		question_for_edit.should_not be_nil
-		question_for_edit.title.should == @question.title
-		question_for_edit.body.should == @question.body
+		controller.question.should_not be_nil
+		controller.question.title.should == @question.title
+		controller.question.body.should == @question.body
 	end
 
 	it "should store return url in session when requesting an edit form" do
 		request.env["HTTP_REFERER"] = my_questions_path
-		get "edit", { id:@question.id }
+		do_edit
 
 		session[:return_to].should == my_questions_path
 	end
@@ -138,6 +125,10 @@ describe QuestionsController do
 
 		def do_create_invalid
 			post "create", { question: { title:TITLE, body:""} }
+		end
+
+		def do_edit
+			get "edit", { id:@question.id }
 		end
 
 		def do_update

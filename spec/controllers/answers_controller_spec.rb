@@ -5,9 +5,28 @@ describe AnswersController do
 	BODY = "my answer"
 
 	before(:each) do
-		@question = Fabricate(:question)
-		@user = Fabricate(:pepe)
+		@question = Fabricate(:answered_question)
+		@user = Fabricate(:user)
 		sign_in @user
+	end
+
+	it "should expose the question in context" do
+		do_index
+		
+		controller.question.should_not be_nil
+		controller.question.should == @question
+	end
+
+	it "should expose all answers for the question" do
+		do_index
+
+		controller.answers.length.should == 3
+	end
+
+	it "should have a new action" do
+		do_new
+
+		response.should be_successful
 	end
 
 	it "should create an answer" do
@@ -18,18 +37,26 @@ describe AnswersController do
 		saved_answer.question.should == @question
 	end
 
-	it "should show question if successful" do
+	it "should show all answers after after successfully adding one" do
 		do_create
-		response.should redirect_to question_path(@question)
+		response.should redirect_to question_answers_path(@question)
 	end
 
-	it "should re-render the question with validation errors" do
+	it "should remain on new answer page if validation errors" do
 		do_create_invalid
 
-		response.should render_template('show')
+		response.should render_template('new')
 	end
 
 	private
+		def do_index
+			get "index", { question_id: @question.id }
+		end
+
+		def do_new
+			get "new", { question_id: @question.id }
+		end
+
 		def do_create
 			post "create", { answer: { body: BODY }, question_id: @question.id }
 		end
