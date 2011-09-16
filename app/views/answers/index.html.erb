@@ -1,0 +1,20 @@
+<div>
+	<div>
+		<strong>Title: </strong><span><%= question.title %></span>
+	</div>
+	<div>
+		<strong>Body: </strong><span><%= question.body %></span>
+	</div>
+	<div>
+		<strong>Created by: </strong><span><%= question.creator.email %></span>
+	</div>
+</div>
+
+
+<%= link_to 'Add answer', new_question_answer_path(question) %>
+<ul>
+	<% answers.each do |a| %>
+		<hr />
+		<li><%= a.body %></li>
+	<% end %>
+</ul>

@@ -6,6 +6,7 @@ describe AnswersController do
 
 	before(:each) do
 		@question = Fabricate(:answered_question)
+		@answer = @question.answers[0]
 		@user = Fabricate(:user)
 		sign_in @user
 	end
@@ -48,6 +49,31 @@ describe AnswersController do
 		response.should render_template('new')
 	end
 
+	it "should have an edit action" do
+		do_edit
+
+		response.should be_successful
+	end
+
+	it "should update an answer" do
+		do_update
+
+		updated_answer = Answer.find(@answer.id)
+		updated_answer.body.should == BODY
+	end
+
+	it "should should show all answers after a successful update" do
+		do_update
+
+		response.should redirect_to question_answers_path(@question)
+	end
+
+	it "should remain in edit form if unsuccessful edit" do
+		do_invalid_update
+
+		response.should render_template "edit"
+	end
+
 	private
 		def do_index
 			get "index", { question_id: @question.id }
@@ -63,5 +89,17 @@ describe AnswersController do
 
 		def do_create_invalid
 			post "create", { answer: {  }, question_id: @question.id }
+		end
+
+		def do_edit
+			get "edit", { question_id: @question.id, id:@answer.id }
+		end
+
+		def do_update
+			post "update", { question_id: @question.id, id:@answer.id, answer:{ body: BODY } }
+		end
+
+		def do_invalid_update
+			post "update", { question_id: @question.id, id:@answer.id, answer:{ body: '' } }
 		end
 end

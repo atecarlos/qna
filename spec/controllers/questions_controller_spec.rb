@@ -115,7 +115,7 @@ describe QuestionsController do
 
 	it "should remain in the edit form if there are validation errors when updating" do
 		do_update_invalid
-		response.should render_template("edit")
+		response.should render_template "edit"
 	end
 
 	private 

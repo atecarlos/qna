@@ -2,7 +2,7 @@
 
 	<% questions.each do |q| %>
 		<hr />
-		<p style="font-weight:bold"><%= link_to q.title, q%></p>
+		<p style="font-weight:bold"><%= link_to q.title, question_answers_path(q) %></p>
 		<p><%= q.body %></p>
 	<% end %>
 
