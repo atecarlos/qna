@@ -2,4 +2,4 @@
 	<%= link_to 'Ask a question' , new_question_path %>
 </div>
 
-<%= render :partial => "questions", :locals => { questions: users_questions } %>
+<%= render :partial => "question", :collection => users_questions %>

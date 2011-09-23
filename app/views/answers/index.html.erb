@@ -12,9 +12,4 @@
 
 
 <%= link_to 'Add answer', new_question_answer_path(question) %>
-<ul>
-	<% answers.each do |a| %>
-		<hr />
-		<li><%= a.body %><span><%= link_to 'Edit', edit_question_answer_path(a.question, a) %></li>
-	<% end %>
-</ul>
+<%= render answers %>
