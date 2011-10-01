@@ -2,16 +2,17 @@ require 'spec_helper'
 
 describe AnswersController do
 
-	BODY = "my answer"
-    QUESTION_ID = 99
-    ANSWER_ID = 88
-
 	before(:each) do
+		@body = "my answer"
+    	@question_id = 99
+    	@answer_id = 88
+    	@answer_params = { 'body' => @body }
+
 		@question = mock('question')
-		@question.stub!(:id).and_return(QUESTION_ID)
+		@question.stub!(:id).and_return(@question_id)
 
 		@answer = mock('answer')
-		@answer.stub!(:id).and_return(ANSWER_ID)
+		@answer.stub!(:id).and_return(@answer_id)
 				
 		#for decent exposure
 		@question.stub!(:attributes=)
@@ -48,60 +49,39 @@ describe AnswersController do
 		response.should be_successful
 	end
 
-	it "should create an answer" do
-		setup_create_mock
-		@answer.should_receive(:save)
-
-		do_create
-	end
-
 	it "should show all answers after after successfully adding one" do
 		setup_create_mock
-		@answer.should_receive(:save).and_return(true)
-
+		
 		do_create
 		response.should redirect_to question_answers_path(@question)
 	end
 
 	it "should remain on new answer page if validation errors" do
-		setup_create_mock
-		@answer.should_receive(:save).and_return(false)
+		setup_invalid_create_mock
 
 		do_create_invalid
-
 		response.should render_template('new')
 	end
 
-	it "should have an edit action" do
+	it "should expose an answer for edit" do
+		setup_edit_mock
 		do_edit
 
 		response.should be_successful
-	end
-
-	it "should update an answer" do
-		setup_update_mock
-		
-		@answer.should_receive(:update_attributes).with({ "body" => BODY })
-		do_update
+		controller.answer.should be @answer
 	end
 
 	it "should should show all answers after a successful update" do
 		setup_update_mock
 
-		@answer.should_receive(:update_attributes)
-			   .with({ "body" => BODY })
-			   .and_return(true)
 		do_update
 
 		response.should redirect_to question_answers_path(@question)
 	end
 
 	it "should remain in edit form if unsuccessful edit" do
-		setup_update_mock
+		setup_invalid_update_mock
 
-		@answer.should_receive(:update_attributes)
-			   .with({ "body" => "" })
-			   .and_return(false)
 		do_invalid_update
 
 		response.should render_template "edit"
@@ -110,7 +90,7 @@ describe AnswersController do
 	private
 		def setup_question_mock
 			Question.should_receive(:find)
-					.with(QUESTION_ID.to_s)
+					.with(@question_id.to_s)
 					.and_return(@question)
 		end
 
@@ -125,11 +105,34 @@ describe AnswersController do
 			Answer.should_receive(:new).and_return(@answer)
 			@answer.should_receive(:creator=).with(@user)
 			@answer.should_receive(:question=).with(@question)
+			@answer.should_receive(:save).and_return(true)
+		end
+
+		def setup_invalid_create_mock
+			setup_answers_mock
+			Answer.should_receive(:new).and_return(@answer)
+			@answer.should_receive(:creator=).with(@user)
+			@answer.should_receive(:question=).with(@question)
+			@answer.should_receive(:save).and_return(false)
+		end
+
+		def setup_edit_mock
+			setup_answers_mock
+			Answer.should_receive(:find).with(@answer_id.to_s).and_return(@answer)
 		end
 
 		def setup_update_mock
-			setup_answers_mock
-			Answer.should_receive(:find).with(ANSWER_ID.to_s).and_return(@answer)
+			setup_edit_mock
+			@answer.should_receive(:update_attributes)
+			   	   .with(@answer_params)
+			       .and_return(true)
+		end
+
+		def setup_invalid_update_mock
+			setup_edit_mock
+			@answer.should_receive(:update_attributes)
+			   	   .with(@answer_params)
+			       .and_return(false)
 		end
 
 		def do_index
@@ -141,11 +144,11 @@ describe AnswersController do
 		end
 
 		def do_create
-			post "create", { answer: { body: BODY }, question_id: @question.id }
+			post "create", { answer:@answer_params, question_id: @question.id }
 		end
 
 		def do_create_invalid
-			post "create", { answer: {  }, question_id: @question.id }
+			post "create", { answer:@answer_params, question_id: @question.id }
 		end
 
 		def do_edit
@@ -153,10 +156,10 @@ describe AnswersController do
 		end
 
 		def do_update
-			post "update", { question_id: @question.id, id:@answer.id, answer:{ body: BODY } }
+			post "update", { question_id: @question.id, id:@answer.id, answer:@answer_params }
 		end
 
 		def do_invalid_update
-			post "update", { question_id: @question.id, id:@answer.id, answer:{ body: '' } }
+			post "update", { question_id: @question.id, id:@answer.id, answer:@answer_params }
 		end
 end
