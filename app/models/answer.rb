@@ -3,10 +3,8 @@ class Answer
 
   	key :body, String, :required => true
 
-  	belongs_to :user
-  	validates_presence_of :user
-  	alias :creator :user
-  	alias :creator= :user=
+  	belongs_to :creator, :through => :user
+  	validates_presence_of :creator
 
   	belongs_to :question
   	validates_presence_of :question

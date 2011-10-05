@@ -10,30 +10,17 @@ describe Question do
 
   it { should validate_presence_of :body }
 
-  it { should validate_presence_of :user }
+  it { should validate_presence_of :creator }
 
   # Shoulda matchers for associations not working properly with mongomapper
   # as of the time of this test been written
 
   it "should have many answers" do
+    @question.answers.length.should == 0
   	@question.answers << Fabricate(:answer)
   	@question.answers.length.should == 1
   	@question.answers << Fabricate(:answer)
   	@question.answers.length.should == 2
-  end
-
-  it "should belong to a user" do
-    @question.user.should_not be_nil
-  end
-
-  it "should have a creator" do
-    @question.creator.should_not be_nil
-  end
-
-  it "should have an assignable creator" do
-    creator = Fabricate(:user)
-    @question.creator = creator
-    @question.creator.should be creator 
   end
 
 end

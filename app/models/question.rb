@@ -4,10 +4,8 @@ class Question
 	key :title, String, required:true
   	key :body, String, required:true
 
-  	validates_presence_of :user
-  	belongs_to :user
-  	alias :creator :user
-  	alias :creator= :user=
-  	
+  	belongs_to :creator, :through => :user
+  	validates_presence_of :creator
+
   	many :answers
 end
