@@ -20,7 +20,7 @@ class QuestionsController < ApplicationController
 	end
 
 	def update
-		if question.update_attributes(params[:question])
+		if current_user_not_creator or question.update_attributes(params[:question])
 			redirect_to session[:return_to]
 		else
 			render :edit
@@ -30,5 +30,9 @@ class QuestionsController < ApplicationController
 	private
 		def store_return_url
 			session[:return_to] = request.referer		
+		end
+
+		def current_user_not_creator
+			current_user != question.creator
 		end
 end

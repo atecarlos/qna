@@ -3,7 +3,7 @@ class Answer
 
   	key :body, String, :required => true
 
-  	belongs_to :creator, :through => :user
+  	belongs_to :creator, :class_name => 'User'
   	validates_presence_of :creator
 
   	belongs_to :question

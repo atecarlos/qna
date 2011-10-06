@@ -15,8 +15,7 @@ describe QuestionsController do
 		
 		@user = mock('user')
 
-		request.env['warden'] = mock(Warden, :authenticate => @user,
-                                             :authenticate! => @user)
+		mock_sign_in_with @user
 
 		session[:return_to] = 'some_url'
 	end
@@ -105,7 +104,24 @@ describe QuestionsController do
 		response.should render_template "edit"
 	end
 
+	it "should not allow editing of another users question" do
+		session[:return_to] = questions_path
+		another_user = mock('another_user')
+		mock_sign_in_with another_user
+		setup_edit_mocks
+
+		@question.should_not_receive :update_attributes
+		do_update
+
+		response.should redirect_to questions_path
+	end
+
 	private 
+		def mock_sign_in_with(user)
+			request.env['warden'] = mock(Warden, :authenticate => user,
+                                             	 :authenticate! => user)
+		end
+
 		def setup_create_mocks
 			Question.should_receive(:new)
 					.with(@question_params_post)
@@ -132,6 +148,8 @@ describe QuestionsController do
 			Question.should_receive(:find)
 				 	.with(@question_id.to_s)
 				 	.and_return(@question)
+
+			@question.stub!(:creator).and_return(@user)
 		end
 
 		def setup_update_mocks

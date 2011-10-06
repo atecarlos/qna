@@ -23,4 +23,8 @@ describe Question do
   	@question.answers.length.should == 2
   end
 
+  it "has a creator who is a user" do
+      @question.creator.should be_kind_of User
+  end
+
 end

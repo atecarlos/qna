@@ -24,7 +24,7 @@ class AnswersController < ApplicationController
 	end
 
 	def update
-		if answer.update_attributes(params[:answer])
+		if current_user_not_creator or answer.update_attributes(params[:answer])
 			redirect_to_index
 		else
 			render :edit
@@ -32,8 +32,11 @@ class AnswersController < ApplicationController
 	end
 
 	private
-		
 		def redirect_to_index
 			redirect_to question_answers_path(question)
+		end
+
+		def current_user_not_creator
+			current_user != answer.creator
 		end
 end

@@ -3,6 +3,9 @@ require 'spec_helper'
 describe AnswersController do
 
 	before(:each) do
+		@user = mock('user')
+		mock_sign_in_with @user
+		
 		@body = "my answer"
     	@question_id = 99
     	@answer_id = 88
@@ -13,16 +16,13 @@ describe AnswersController do
 
 		@answer = mock('answer')
 		@answer.stub!(:id).and_return(@answer_id)
+		@answer.stub!(:creator).and_return(@user)
 				
 		#for decent exposure
 		@question.stub!(:attributes=)
 		@question.stub!(:persisted?).and_return(true)
 		@answer.stub!(:attributes=)
-
-		@user = mock('user')
-
-		request.env['warden'] = mock(Warden, :authenticate => @user,
-                                             :authenticate! => @user)
+        
 	end
 
 	it "should expose the question in context" do
@@ -87,7 +87,24 @@ describe AnswersController do
 		response.should render_template "edit"
 	end
 
+	it "should not allow editing of another users answer" do
+		another_user = mock('another_user')
+		mock_sign_in_with another_user
+		setup_edit_mock
+
+		@answer.should_not_receive :update_attributes
+		do_update
+
+		response.should redirect_to question_answers_path(@question)
+	end
+
 	private
+
+		def mock_sign_in_with(user)
+			request.env['warden'] = mock(Warden, :authenticate => user,
+                                             	 :authenticate! => user)
+		end
+
 		def setup_question_mock
 			Question.should_receive(:find)
 					.with(@question_id.to_s)
