@@ -7,5 +7,5 @@ class Question
   	belongs_to :creator, :class_name => 'User'
   	validates_presence_of :creator
 
-  	many :answers
+  	many :answers, :dependent => :delete_all
 end
