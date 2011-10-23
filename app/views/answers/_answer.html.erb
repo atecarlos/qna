@@ -2,6 +2,7 @@
 <div>
 	<p>
 		<span><%= answer.body %></span>
-		<span><%= link_to 'Edit', edit_question_answer_path(answer.question, answer) %></span>
+		<span><%= edit_link_for answer %></span>
+		<div><span>by </span><span><%= answer.creator.email %></span></div>
 	</p>
 </div>

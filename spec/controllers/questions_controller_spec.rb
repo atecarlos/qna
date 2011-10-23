@@ -117,11 +117,6 @@ describe QuestionsController do
 	end
 
 	private 
-		def mock_sign_in_with(user)
-			request.env['warden'] = mock(Warden, :authenticate => user,
-                                             	 :authenticate! => user)
-		end
-
 		def setup_create_mocks
 			Question.should_receive(:new)
 					.with(@question_params_post)

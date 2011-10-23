@@ -29,5 +29,12 @@ RSpec.configure do |config|
       end
     end
   end
+
+  #common functions
+
+  def mock_sign_in_with(user)
+      controller.request.env['warden'] = mock(Warden, :authenticate => user,
+                                               :authenticate! => user)
+  end
   
 end

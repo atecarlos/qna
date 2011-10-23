@@ -100,11 +100,6 @@ describe AnswersController do
 
 	private
 
-		def mock_sign_in_with(user)
-			request.env['warden'] = mock(Warden, :authenticate => user,
-                                             	 :authenticate! => user)
-		end
-
 		def setup_question_mock
 			Question.should_receive(:find)
 					.with(@question_id.to_s)
