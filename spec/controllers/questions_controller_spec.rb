@@ -9,12 +9,9 @@ describe QuestionsController do
 		@question_params = { title:@title, body:@body}
 		@question_params_post = { 'title' => @title, 'body' => @body}
 
-		@question = mock('question')
-		@question.stub!(:id).and_return(@question_id)
-		@question.stub!(:attributes=)
+		@question = mock_decent_exposure_model('Question', id:@question_id)
 		
 		@user = mock('user')
-
 		mock_sign_in_with @user
 
 		session[:return_to] = 'some_url'

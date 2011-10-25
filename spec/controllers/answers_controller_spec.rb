@@ -11,18 +11,8 @@ describe AnswersController do
     	@answer_id = 88
     	@answer_params = { 'body' => @body }
 
-		@question = mock('question')
-		@question.stub!(:id).and_return(@question_id)
-
-		@answer = mock('answer')
-		@answer.stub!(:id).and_return(@answer_id)
-		@answer.stub!(:creator).and_return(@user)
-				
-		#for decent exposure
-		@question.stub!(:attributes=)
-		@question.stub!(:persisted?).and_return(true)
-		@answer.stub!(:attributes=)
-        
+		@question = mock_decent_exposure_model('Question', id:@question_id)
+		@answer = mock_decent_exposure_model('Answer', id:@answer_id, creator:@user)
 	end
 
 	it "should expose the question in context" do

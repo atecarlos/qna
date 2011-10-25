@@ -1,5 +1,8 @@
 <hr />
 <div>
-	<p style="font-weight:bold"><%= link_to question.title, question_answers_path(question) %></p>
+	<div>
+		<span style="font-weight:bold"><%= link_to question.title, question_answers_path(question) %></span>
+		<span><%= edit_link_for question %></span>
+	</div>
 	<p><%= question.body %></p>
 </div>

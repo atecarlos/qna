@@ -3,6 +3,9 @@ ENV["RAILS_ENV"] ||= 'test'
 require File.expand_path("../../config/environment", __FILE__)
 require 'rspec/rails'
 
+require 'common'
+include Common
+
 # Requires supporting ruby files with custom matchers and macros, etc,
 # in spec/support/ and its subdirectories.
 Dir[Rails.root.join("spec/support/**/*.rb")].each {|f| require f}
@@ -28,13 +31,6 @@ RSpec.configure do |config|
         collection.remove
       end
     end
-  end
-
-  #common functions
-
-  def mock_sign_in_with(user)
-      controller.request.env['warden'] = mock(Warden, :authenticate => user,
-                                               :authenticate! => user)
   end
   
 end
