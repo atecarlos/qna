@@ -10,10 +10,6 @@ describe "routing to questions" do
     { get:"/questions/1" }.should_not be_routable
   end
 
-  it "should not have a destroy action" do
-    { delete:"/questions/1" }.should_not be_routable
-  end
-
   it "should have a my-questions route" do
       { get:"/questions/my-questions" }.should route_to(
         controller:"questions", action:"my_questions" )
@@ -44,4 +40,8 @@ describe "routing to questions" do
       controller:"questions", id:"1", action:"update" )
   end
 
+  it "should have a destroy action" do
+    { delete:"/questions/1" }.should route_to(
+      controller:"questions", id:"1", action:"destroy" )
+  end
 end

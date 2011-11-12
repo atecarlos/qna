@@ -88,8 +88,19 @@ describe AnswersController do
 		response.should redirect_to question_answers_path(@question)
 	end
 
-	it "should destroy an answer and redirect and then show all remaining answers" do
+	it "should destroy an answer and then show all remaining answers" do
 		setup_destroy_mock_expectations
+		do_destroy
+
+		response.should redirect_to question_answers_path(@question)
+	end
+
+	it "should not destroy another users answer" do
+		another_user = mock('another_user')
+		mock_sign_in_with another_user
+		setup_edit_mock_expectations
+
+		@answer.should_not_receive :destroy
 		do_destroy
 
 		response.should redirect_to question_answers_path(@question)
@@ -147,7 +158,6 @@ describe AnswersController do
 		def setup_destroy_mock_expectations
 			setup_edit_mock_expectations
 			@answer.should_receive(:destroy)
-				   .and_return(true)
 		end
 
 		def do_index

@@ -2,7 +2,7 @@ Qna::Application.routes.draw do
   
   devise_for :users
 
-  resources :questions, :except => [:destroy, :show] do
+  resources :questions, :except => :show do
   	collection do
   		get 'my-questions', action: 'my_questions', as: 'my'
   	end

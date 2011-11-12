@@ -24,7 +24,7 @@ class AnswersController < ApplicationController
 	end
 
 	def update
-		if current_user_not_creator or update_successful?
+		if current_user_not_creator? or update_successful?
 			redirect_to_index
 		else
 			render :edit
@@ -32,7 +32,7 @@ class AnswersController < ApplicationController
 	end
 
 	def destroy
-		answer.destroy
+		answer.destroy unless current_user_not_creator?
 		redirect_to_index
 	end
 
@@ -41,7 +41,7 @@ class AnswersController < ApplicationController
 			redirect_to question_answers_path(question)
 		end
 
-		def current_user_not_creator
+		def current_user_not_creator?
 			current_user != answer.creator
 		end
 

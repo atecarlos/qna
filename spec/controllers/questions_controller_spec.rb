@@ -53,14 +53,14 @@ describe QuestionsController do
 	end
 
 	it "should set referrer in session when requesting form for new" do
-		request.env["HTTP_REFERER"] = my_questions_path
+		set_referrer_to my_questions_path
 		get "new"
 		
 		session[:return_to].should == my_questions_path
 	end
 
 	it "should always redirect to return url in session when creating a new question" do
-		setup_create_mocks
+		setup_create_mock_expectations
 		session[:return_to] = my_questions_path
 		do_create
 		
@@ -68,35 +68,35 @@ describe QuestionsController do
 	end
 
 	it "should not redirect when creating if invalid attributes provided" do
-		setup_invalid_create_mocks
+		setup_invalid_create_mock_expectations
 		do_create_invalid
 
 		response.should render_template('new')
 	end
 	
 	it "should expose question for edit" do
-		setup_edit_mocks
+		setup_edit_mock_expectations
 		do_edit
 		controller.question.should be @question
 		response.should be_success
 	end
 
 	it "should store return url in session when requesting an edit form" do
-		request.env["HTTP_REFERER"] = my_questions_path
+		set_referrer_to my_questions_path
 		do_edit
 
 		session[:return_to].should == my_questions_path
 	end
 
 	it "should always redirect to return url in session after successfully updating a question" do
-		setup_update_mocks
+		setup_update_mock_expectations
 		session[:return_to] = questions_path
 		do_update
 		response.should redirect_to questions_path
 	end
 
 	it "should remain in the edit form if there are validation errors when updating" do
-		setup_invalid_update_mocks
+		setup_invalid_update_mock_expectations
 		do_update_invalid
 		response.should render_template "edit"
 	end
@@ -105,7 +105,7 @@ describe QuestionsController do
 		session[:return_to] = questions_path
 		another_user = mock('another_user')
 		mock_sign_in_with another_user
-		setup_edit_mocks
+		setup_edit_mock_expectations
 
 		@question.should_not_receive :update_attributes
 		do_update
@@ -113,8 +113,28 @@ describe QuestionsController do
 		response.should redirect_to questions_path
 	end
 
+	it "should destroy a question and redirect back to referrer" do
+		set_referrer_to questions_path
+		setup_destroy_mock_expectations
+
+		do_destroy
+		response.should redirect_to questions_path
+	end
+
+	it "should not destroy another users question" do
+		set_referrer_to my_questions_path
+		another_user = mock('another_user')
+		mock_sign_in_with another_user
+		setup_edit_mock_expectations
+
+		@question.should_not_receive :destroy
+		do_destroy
+
+		response.should redirect_to my_questions_path
+	end
+
 	private 
-		def setup_create_mocks
+		def setup_create_mock_expectations
 			Question.should_receive(:new)
 					.with(@question_params_post)
 					.and_return(@question)
@@ -125,7 +145,7 @@ describe QuestionsController do
 			@question.should_receive(:save).and_return(true)
 		end
 
-		def setup_invalid_create_mocks
+		def setup_invalid_create_mock_expectations
 			Question.should_receive(:new)
 					.with(@question_params_post)
 					.and_return(@question)
@@ -136,7 +156,7 @@ describe QuestionsController do
 			@question.should_receive(:save).and_return(false)
 		end
 
-		def setup_edit_mocks
+		def setup_edit_mock_expectations
 			Question.should_receive(:find)
 				 	.with(@question_id.to_s)
 				 	.and_return(@question)
@@ -144,18 +164,23 @@ describe QuestionsController do
 			@question.stub!(:creator).and_return(@user)
 		end
 
-		def setup_update_mocks
-			setup_edit_mocks
+		def setup_update_mock_expectations
+			setup_edit_mock_expectations
 			@question.should_receive(:update_attributes)
 					 .with(@question_params_post)
 					 .and_return(true)
 		end
 
-		def setup_invalid_update_mocks
-			setup_edit_mocks
+		def setup_invalid_update_mock_expectations
+			setup_edit_mock_expectations
 			@question.should_receive(:update_attributes)
 				     .with(@question_params_post)
 					 .and_return(false)
+		end
+
+		def setup_destroy_mock_expectations
+			setup_edit_mock_expectations
+			@question.should_receive(:destroy)
 		end
 
 		def do_create
@@ -176,5 +201,13 @@ describe QuestionsController do
 
 		def do_update_invalid
 			put "update", { id:@question.id, question: @question_params }
+		end
+
+		def do_destroy
+			delete "destroy", { id: @question.id }
+		end
+
+		def set_referrer_to(url)
+			request.env["HTTP_REFERER"] = url
 		end
 end
