@@ -24,11 +24,16 @@ class AnswersController < ApplicationController
 	end
 
 	def update
-		if current_user_not_creator or answer.update_attributes(params[:answer])
+		if current_user_not_creator or update_successful?
 			redirect_to_index
 		else
 			render :edit
 		end
+	end
+
+	def destroy
+		answer.destroy
+		redirect_to_index
 	end
 
 	private
@@ -38,5 +43,9 @@ class AnswersController < ApplicationController
 
 		def current_user_not_creator
 			current_user != answer.creator
+		end
+
+		def update_successful?
+			answer.update_attributes(params[:answer])
 		end
 end
