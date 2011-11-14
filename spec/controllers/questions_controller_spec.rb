@@ -9,9 +9,9 @@ describe QuestionsController do
 		@question_params = { title:@title, body:@body}
 		@question_params_post = { 'title' => @title, 'body' => @body}
 
-		@question = mock_decent_exposure_model('Question', id:@question_id)
+		@question = mock_decent_exposure_model(Question, id:@question_id)
 		
-		@user = mock('user')
+		@user = mock_model(User)
 		mock_sign_in_with @user
 
 		session[:return_to] = 'some_url'
@@ -103,7 +103,7 @@ describe QuestionsController do
 
 	it "should not allow editing of another users question" do
 		session[:return_to] = questions_path
-		another_user = mock('another_user')
+		another_user = mock_model(User)
 		mock_sign_in_with another_user
 		setup_edit_mock_expectations
 
@@ -123,7 +123,7 @@ describe QuestionsController do
 
 	it "should not destroy another users question" do
 		set_referrer_to my_questions_path
-		another_user = mock('another_user')
+		another_user = mock_model(User)
 		mock_sign_in_with another_user
 		setup_edit_mock_expectations
 

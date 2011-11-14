@@ -36,6 +36,7 @@ GEM
     bson (1.3.1)
     bson_ext (1.3.1)
     builder (3.0.0)
+    cancan (1.6.7)
     capybara (1.0.1)
       mime-types (>= 1.16)
       nokogiri (>= 1.3.3)
@@ -174,6 +175,7 @@ PLATFORMS
 
 DEPENDENCIES
   bson_ext
+  cancan
   cucumber-rails
   decent_exposure
   devise

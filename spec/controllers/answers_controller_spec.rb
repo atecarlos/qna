@@ -3,7 +3,7 @@ require 'spec_helper'
 describe AnswersController do
 
 	before(:each) do
-		@user = mock('user')
+		@user = mock_model(User)
 		mock_sign_in_with @user
 		
 		@body = "my answer"
@@ -11,8 +11,8 @@ describe AnswersController do
     	@answer_id = 88
     	@answer_params = { 'body' => @body }
 
-		@question = mock_decent_exposure_model('Question', id:@question_id)
-		@answer = mock_decent_exposure_model('Answer', id:@answer_id, creator:@user)
+		@question = mock_decent_exposure_model(Question, id:@question_id)
+		@answer = mock_decent_exposure_model(Answer, id:@answer_id, creator:@user)
 	end
 
 	it "should expose the question in context" do
@@ -78,7 +78,7 @@ describe AnswersController do
 	end
 
 	it "should not allow editing of another users answer" do
-		another_user = mock('another_user')
+		another_user = mock_model(User)
 		mock_sign_in_with another_user
 		setup_edit_mock_expectations
 
@@ -96,7 +96,7 @@ describe AnswersController do
 	end
 
 	it "should not destroy another users answer" do
-		another_user = mock('another_user')
+		another_user = mock_model(User)
 		mock_sign_in_with another_user
 		setup_edit_mock_expectations
 

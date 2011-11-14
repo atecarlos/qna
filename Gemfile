@@ -5,6 +5,7 @@ gem 'devise'
 gem 'mongo_mapper'
 gem 'bson_ext'
 gem 'decent_exposure'
+gem 'cancan'
 
 #mongo_mapper with devise integration
 gem 'jnunemaker-validatable'
