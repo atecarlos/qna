@@ -24,5 +24,8 @@ Qna::Application.configure do
 
   # suggested devise configuration
   config.action_mailer.default_url_options = { :host => 'localhost:3000' }
+
+  # don't include all helpers by default
+  config.action_controller.include_all_helpers = false
 end
 
