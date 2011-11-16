@@ -20,7 +20,7 @@ class QuestionsController < ApplicationController
 	end
 
 	def update
-		if current_user_not_creator? or update_successful?
+		if cannot? :edit, question or update_successful?
 			redirect_to session[:return_to]
 		else
 			render :edit
@@ -28,7 +28,7 @@ class QuestionsController < ApplicationController
 	end
 
 	def destroy
-		question.destroy unless current_user_not_creator?
+		question.destroy if can? :destroy, question
 		redirect_to :back
 	end
 
@@ -39,9 +39,5 @@ class QuestionsController < ApplicationController
 
 		def update_successful?
 			question.update_attributes params[:question]
-		end
-
-		def current_user_not_creator?
-			current_user != question.creator
 		end
 end
