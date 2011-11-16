@@ -77,10 +77,9 @@ describe AnswersController do
 		response.should render_template "edit"
 	end
 
-	it "should not allow editing of another users answer" do
-		another_user = mock_model(User)
-		mock_sign_in_with another_user
+	it "should not allow editing if user can't edit answer" do
 		setup_edit_mock_expectations
+		controller.should_receive(:cannot?).with(:edit, @answer).and_return(true)
 
 		@answer.should_not_receive :update_attributes
 		do_update
@@ -90,15 +89,15 @@ describe AnswersController do
 
 	it "should destroy an answer and then show all remaining answers" do
 		setup_destroy_mock_expectations
+		
 		do_destroy
 
 		response.should redirect_to question_answers_path(@question)
 	end
 
-	it "should not destroy another users answer" do
-		another_user = mock_model(User)
-		mock_sign_in_with another_user
+	it "should not destroy if user can't delete answer" do
 		setup_edit_mock_expectations
+		controller.should_receive(:can?).with(:destroy, @answer).and_return(false)
 
 		@answer.should_not_receive :destroy
 		do_destroy
@@ -146,6 +145,7 @@ describe AnswersController do
 			@answer.should_receive(:update_attributes)
 			   	   .with(@answer_params)
 			       .and_return(true)
+			controller.should_receive(:cannot?).with(:edit, @answer).and_return(false)
 		end
 
 		def setup_invalid_update_mock_expectations
@@ -153,11 +153,13 @@ describe AnswersController do
 			@answer.should_receive(:update_attributes)
 			   	   .with(@answer_params)
 			       .and_return(false)
+			controller.should_receive(:cannot?).with(:edit, @answer).and_return(false)
 		end
 
 		def setup_destroy_mock_expectations
 			setup_edit_mock_expectations
 			@answer.should_receive(:destroy)
+			controller.should_receive(:can?).with(:destroy, @answer).and_return(true)
 		end
 
 		def do_index

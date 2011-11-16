@@ -101,11 +101,10 @@ describe QuestionsController do
 		response.should render_template "edit"
 	end
 
-	it "should not allow editing of another users question" do
+	it "should not allow editing if user can't edit question" do
 		session[:return_to] = questions_path
-		another_user = mock_model(User)
-		mock_sign_in_with another_user
 		setup_edit_mock_expectations
+		controller.should_receive(:cannot?).with(:edit, @question).and_return(true)
 
 		@question.should_not_receive :update_attributes
 		do_update
@@ -121,11 +120,10 @@ describe QuestionsController do
 		response.should redirect_to questions_path
 	end
 
-	it "should not destroy another users question" do
+	it "should not destroy if user can't delete question" do
 		set_referrer_to my_questions_path
-		another_user = mock_model(User)
-		mock_sign_in_with another_user
 		setup_edit_mock_expectations
+		controller.should_receive(:can?).with(:destroy, @question).and_return(false)
 
 		@question.should_not_receive :destroy
 		do_destroy
@@ -169,6 +167,7 @@ describe QuestionsController do
 			@question.should_receive(:update_attributes)
 					 .with(@question_params_post)
 					 .and_return(true)
+			controller.should_receive(:cannot?).with(:edit, @question).and_return(false)
 		end
 
 		def setup_invalid_update_mock_expectations
@@ -176,11 +175,13 @@ describe QuestionsController do
 			@question.should_receive(:update_attributes)
 				     .with(@question_params_post)
 					 .and_return(false)
+			controller.should_receive(:cannot?).with(:edit, @question).and_return(false)
 		end
 
 		def setup_destroy_mock_expectations
 			setup_edit_mock_expectations
 			@question.should_receive(:destroy)
+			controller.should_receive(:can?).with(:destroy, @question).and_return(true)
 		end
 
 		def do_create
