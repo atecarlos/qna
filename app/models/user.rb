@@ -7,5 +7,8 @@ class User
 
     attr_accessible :email, :password, :password_confirmation
 
+    key :admin, Boolean
+
     many :questions
+    many :answers
 end
