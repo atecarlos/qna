@@ -8,9 +8,9 @@ class Ability
 
   private 
     def restrict_only_edit_and_destroy_for(klass, user)
-        can :manage, klass
-        cannot [:edit, :destroy], klass do |instance|
-            instance.creator.id != user.id
+        can [:read, :create], klass
+        can [:edit, :destroy], klass do |instance|
+            instance.creator.id == user.id || user.admin?
         end
     end
 end

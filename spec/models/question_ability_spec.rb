@@ -3,34 +3,73 @@ require 'cancan/matchers'
 
 describe Ability do
 
-	before(:each) do
-		@user = mock_model(User)
-		@ability = Ability.new(@user)
+	describe "For non admins" do
 
-		@question = Question.new(creator:@user)
+		before(:each) do
+			build_objects
+		end
 
-		another_user = mock_model(User)
-		@another_users_question = Question.new(creator:another_user)
+		it "can read questions" do
+			@ability.should be_able_to(:read, Question)
+		end
+
+		it "can create questions" do
+			@ability.should be_able_to(:create, Question)
+		end
+
+		it "can edit its own questions" do
+			@ability.should be_able_to(:edit, @question)
+		end
+
+		it "can delete its own questions" do
+			@ability.should be_able_to(:destroy, @question)
+		end
+
+		it "can't edit another users questions" do
+			@ability.should_not be_able_to(:edit, @another_users_question)
+		end
+
+		it "can't delete another users questions" do
+			@ability.should_not be_able_to(:destroy, @another_users_question)
+		end
+
 	end
 
-	it "can manage questions" do
-		@ability.should be_able_to(:manage, Question)
+	describe "For admins" do
+
+		before(:each) do
+			build_objects for_admin:true
+		end
+
+		it "can read questions" do
+			@ability.should be_able_to(:read, Question)
+		end
+
+		it "can create questions" do
+			@ability.should be_able_to(:create, Question)
+		end
+
+		it "can edit any question" do
+			@ability.should be_able_to(:edit, @question)
+			@ability.should be_able_to(:edit, @another_users_question)
+		end
+
+		it "can delete any question" do
+			@ability.should be_able_to(:destroy, @question)
+			@ability.should be_able_to(:destroy, @another_users_question)
+		end
+
 	end
 
-	it "can edit its own questions" do
-		@ability.should be_able_to(:edit, @question)
-	end
+	private
 
-	it "can delete its own questions" do
-		@ability.should be_able_to(:destroy, @question)
-	end
+		def build_objects(for_admin = false)
+			@user = mock_model(User, admin?:for_admin)
+			@ability = Ability.new(@user)
 
-	it "can't edit another users questions" do
-		@ability.should_not be_able_to(:edit, @another_users_question)
-	end
+			@question = Question.new(creator:@user)
 
-	it "can't delete another users questions" do
-		@ability.should_not be_able_to(:destroy, @another_users_question)
-	end
-		
+			another_user = mock_model(User)
+			@another_users_question = Question.new(creator:another_user)
+		end	
 end
