@@ -1,25 +1,34 @@
 require 'spec_helper'
 
-describe User do
+describe @user do
+    
+    before(:each) do
+      @user = User.new
+    end
 
   	it "should have many questions" do
-  		user = User.new
-  		user.questions.length.should == 0
-  		user.questions << Fabricate(:question)
-  		user.questions.length.should == 1 
+  		@user.questions.length.should == 0
+  		@user.questions << Fabricate(:question)
+  		@user.questions.length.should == 1 
   	end
 
   	it "should have many answers" do
-  		user = User.new
-  		user.answers.length.should == 0
-  		user.answers << Fabricate(:answer)
-  		user.answers.length.should == 1
+  		@user.answers.length.should == 0
+  		@user.answers << Fabricate(:answer)
+  		@user.answers.length.should == 1
   	end
 
   	it "can be an admin" do
-  		user = User.new
-  		user.admin?.should be_false
-		user.admin = true
-		user.admin?.should be_true
+      @user.role = :admin
+  		@user.admin?.should be_true
+		  @user.role = :temp
+		  @user.admin?.should be_false
   	end
+
+    it "can be a moderator" do
+      @user.role = :moderator
+      @user.moderator?.should be_true
+      @user.role = :admin
+      @user.moderator?.should be_false
+    end
 end

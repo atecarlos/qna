@@ -5,10 +5,18 @@ class User
   	devise :database_authenticatable, :registerable,
            :recoverable, :rememberable, :trackable, :validatable
 
-    attr_accessible :email, :password, :password_confirmation
+    attr_accessible :email, :password, :role, :password_confirmation
 
-    key :admin, Boolean
+    key :role
 
     many :questions
     many :answers
+
+    def admin?
+    	role == :admin
+    end
+
+    def moderator?
+    	role == :moderator
+    end
 end

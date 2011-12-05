@@ -5,7 +5,7 @@ describe Ability do
 	
 	subject { Ability.new(@user) }
 		
-	context "For non admins" do
+	context "For regular users" do
 
 		before(:each) do
 			build_objects
@@ -37,10 +37,10 @@ describe Ability do
 
 	end
 
-	context "For admins" do
+	context "For moderators" do
 
 		before(:each) do
-			build_objects for_admin:true
+			build_objects for_moderator:true
 		end
 
 		it "can read answers" do
@@ -64,8 +64,8 @@ describe Ability do
 	end
 
 	private 
-		def build_objects(for_admin = false)
-			@user = mock_model(User, admin?:for_admin)
+		def build_objects(for_moderator = false)
+			@user = mock_model(User, moderator?:for_moderator)
 
 			@answer = mock_model(Answer, creator:@user)
 

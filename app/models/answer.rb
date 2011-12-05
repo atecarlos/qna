@@ -1,9 +1,9 @@
 class Answer
 	include MongoMapper::Document
 
-  	key :body, String, :required => true
+  	key :body, String, required:true
 
-  	belongs_to :creator, :class_name => 'User'
+  	belongs_to :creator, class_name:'User'
   	validates_presence_of :creator
 
   	belongs_to :question
