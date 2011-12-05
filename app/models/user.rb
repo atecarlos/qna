@@ -12,10 +12,6 @@ class User
     many :questions
     many :answers
 
-    def admin?
-    	role == :admin
-    end
-
     def moderator?
     	role == :moderator
     end

@@ -18,13 +18,6 @@ describe @user do
   		@user.answers.length.should == 1
   	end
 
-  	it "can be an admin" do
-      @user.role = :admin
-  		@user.admin?.should be_true
-		  @user.role = :temp
-		  @user.admin?.should be_false
-  	end
-
     it "can be a moderator" do
       @user.role = :moderator
       @user.moderator?.should be_true
