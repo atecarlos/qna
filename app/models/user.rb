@@ -15,4 +15,8 @@ class User
     def moderator?
     	role == :moderator
     end
+
+    def temp?
+    	role == :temp
+    end
 end

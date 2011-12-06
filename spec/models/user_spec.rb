@@ -24,4 +24,11 @@ describe @user do
       @user.role = :admin
       @user.moderator?.should be_false
     end
+
+    it "can be a temp user" do
+      @user.role = :temp
+      @user.temp?.should be_true
+      @user.role = :moderator
+      @user.temp?.should be_false
+    end
 end

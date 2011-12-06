@@ -7,9 +7,7 @@ describe Ability do
 
 	context "For regular users" do
 
-		before(:each) do
-			build_objects
-		end
+		before(:each) { build_objects_for :user }
 
 		it "can read questions" do
 			should be_able_to(:read, Question)
@@ -39,9 +37,7 @@ describe Ability do
 
 	context "For moderators" do
 
-		before(:each) do
-			build_objects for_moderator:true
-		end
+		before(:each) { build_objects_for :moderator }
 
 		it "can read questions" do
 			should be_able_to(:read, Question)
@@ -63,14 +59,36 @@ describe Ability do
 
 	end
 
+	context "For temp users" do
+		before(:each) { build_objects_for :temp }
+
+		it "can read questions" do
+			should be_able_to(:read, Question)
+		end
+
+		it "can't create questions" do
+			should_not be_able_to(:create, Question)
+		end
+
+		it "can't edit any question" do
+			should_not be_able_to(:edit, @question)
+			should_not be_able_to(:edit, @another_users_question)
+		end
+
+		it "can't delete any question" do
+			should_not be_able_to(:destroy, @question)
+			should_not be_able_to(:destroy, @another_users_question)
+		end
+	end
+
 	private
 
-		def build_objects(for_moderator = false)
-			@user = mock_model(User, moderator?:for_moderator)
+		def build_objects_for(role)
+			@user = User.new(:role => role)
 
 			@question = mock_model(Question, creator:@user)
 
-			another_user = mock_model(User)
+			another_user = User.new #mock_model(User)
 			@another_users_question = mock_model(Question, creator:another_user)
 		end	
 end
