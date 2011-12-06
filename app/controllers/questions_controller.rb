@@ -12,7 +12,7 @@ class QuestionsController < ApplicationController
 
 	def create
 		question.creator = current_user
-		if question.save
+		if can? :create, question and question.save
 			redirect_to session[:return_to]
 		else
 			render :new

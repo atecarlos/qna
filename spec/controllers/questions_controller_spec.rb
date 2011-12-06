@@ -73,6 +73,14 @@ describe QuestionsController do
 
 		response.should render_template('new')
 	end
+
+	it "should not redirect or save when user does not have permissions to create" do
+		setup_create_mock_objects
+		controller.should_receive(:can?).with(:create, @question).and_return(false)
+		do_create
+
+		response.should render_template('new')
+	end
 	
 	it "should expose question for edit" do
 		setup_edit_mock_expectations
@@ -131,26 +139,26 @@ describe QuestionsController do
 		response.should redirect_to my_questions_path
 	end
 
-	private 
-		def setup_create_mock_expectations
+	private
+
+		def setup_create_mock_objects
 			Question.should_receive(:new)
 					.with(@question_params_post)
 					.and_return(@question)
 
 			@question.should_receive(:creator=)
 				 	 .with(@user)
+		end
 
+		def setup_create_mock_expectations
+			setup_create_mock_objects
+			controller.should_receive(:can?).with(:create, @question).and_return(true)
 			@question.should_receive(:save).and_return(true)
 		end
 
 		def setup_invalid_create_mock_expectations
-			Question.should_receive(:new)
-					.with(@question_params_post)
-					.and_return(@question)
-
-			@question.should_receive(:creator=)
-				 	 .with(@user)
-
+			setup_create_mock_objects
+			controller.should_receive(:can?).with(:create, @question).and_return(true)
 			@question.should_receive(:save).and_return(false)
 		end
 

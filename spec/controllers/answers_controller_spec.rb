@@ -53,6 +53,14 @@ describe AnswersController do
 		response.should render_template('new')
 	end
 
+	it "should not create if don't have permissions to" do
+		setup_create_mock_objects
+		controller.should_receive(:can?).with(:create, @answer).and_return(false)
+
+		do_create
+		response.should render_template('new')
+	end
+
 	it "should expose an answer for edit" do
 		setup_edit_mock_expectations
 		do_edit
@@ -119,19 +127,24 @@ describe AnswersController do
 			     	 .and_return([ @answer ])
 		end
 
-		def setup_create_mock_expectations
+		def setup_create_mock_objects
 			setup_answers_mock_expectations
 			Answer.should_receive(:new).and_return(@answer)
 			@answer.should_receive(:creator=).with(@user)
 			@answer.should_receive(:question=).with(@question)
+		end
+
+		def setup_create_mock_expectations
+			setup_create_mock_objects
+			controller.should_receive(:can?).with(:create, @answer).and_return(true)
+
 			@answer.should_receive(:save).and_return(true)
 		end
 
 		def setup_invalid_create_mock_expectations
-			setup_answers_mock_expectations
-			Answer.should_receive(:new).and_return(@answer)
-			@answer.should_receive(:creator=).with(@user)
-			@answer.should_receive(:question=).with(@question)
+			setup_create_mock_objects
+			controller.should_receive(:can?).with(:create, @answer).and_return(true)
+
 			@answer.should_receive(:save).and_return(false)
 		end
 

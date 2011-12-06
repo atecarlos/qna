@@ -13,7 +13,7 @@ class AnswersController < ApplicationController
 	def create
 		answer.creator = current_user
 		answer.question = question
-		if answer.save
+		if can? :create, answer and answer.save
 			redirect_to_index
 		else
 			render :new
